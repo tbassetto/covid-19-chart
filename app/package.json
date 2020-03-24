@@ -6,11 +6,12 @@
   "license": "MIT",
   "scripts": {
     "build": "concurrently -n \"server,app\" -c \"bgBlue.bold,bgMagenta.bold\" -s \"first\" -k \"yarn server\" \"next build\"",
-    "dev": "next",
+    "dev": "concurrently -n \"server,app\" -c \"bgBlue.bold,bgMagenta.bold\" -s \"first\" -k \"yarn server:dev\" \"next\"",
     "export": "next export",
     "lint": "eslint .",
     "prettier": "prettier *.js components pages",
     "server": "node ../api/index.js",
+    "server:dev": "../api/node_modules/.bin/nodemon ../api/index.js",
     "start": "next start"
   },
   "dependencies": {
