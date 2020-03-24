@@ -10,7 +10,11 @@ export default function Footer({ lastUpdate }) {
       py={2}
     >
       <Text fontSize="sm">
-        Last data update: <em>{lastUpdate}</em>. Made by <a href="https://twitter.com/tbassetto">@tbassetto</a>. <a href="https://github.com/tbassetto/covid-19-graph"><em>source</em></a>
+        Last data update: <em>{lastUpdate}</em>. Made by{" "}
+        <a href="https://twitter.com/tbassetto">@tbassetto</a>.{" "}
+        <a href="https://github.com/tbassetto/covid-19-chart">
+          <em>source</em>
+        </a>
       </Text>
     </Flex>
   );

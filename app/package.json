@@ -9,6 +9,7 @@
     "dev": "next",
     "export": "next export",
     "lint": "eslint .",
+    "prettier": "prettier *.js components pages",
     "server": "node ../api/index.js",
     "start": "next start"
   },

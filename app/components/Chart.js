@@ -4,7 +4,7 @@ import { curveBasis } from "@vx/curve";
 import { AxisLeft, AxisBottom } from "@vx/axis";
 import { LinePath } from "@vx/shape";
 import { scaleTime, scaleLinear, scaleBand } from "@vx/scale";
-import { withParentSize } from '@vx/responsive';
+import { withParentSize } from "@vx/responsive";
 import { extent } from "d3-array";
 
 const Chart = (props) => {
@@ -15,37 +15,37 @@ const Chart = (props) => {
     top: 50,
     right: 30,
     bottom: 50,
-    left: 80
+    left: 80,
   };
   const comparedToTotalPopulation = yAxis === "population";
 
-  let series = countries.map(country => {
-    const found = data.find(l => l.name === country.name);
+  let series = countries.map((country) => {
+    const found = data.find((l) => l.name === country.name);
     return {
       name: country.name,
       color: country.color,
       population: found.population,
-      data: found.data
+      data: found.data,
     };
   });
 
   if (!comparedToTotalPopulation) {
-    series = series.map(country => {
+    series = series.map((country) => {
       return {
         ...country,
-        data: country.data.map(data => ({
+        data: country.data.map((data) => ({
           ...data,
           deaths: (data.deaths / country.population) * 100000,
-          confirmed: (data.confirmed / country.population) * 100000
-        }))
+          confirmed: (data.confirmed / country.population) * 100000,
+        })),
       };
     });
   }
   const allData = series.reduce((acc, d) => acc.concat(d.data), []);
 
   // accessors
-  const x = d => new Date(d.date);
-  const y = d => d[category];
+  const x = (d) => new Date(d.date);
+  const y = (d) => d[category];
 
   // responsive utils for axis ticks
   function numTicksForHeight(height) {
@@ -65,18 +65,18 @@ const Chart = (props) => {
   // scales
   const xScale = scaleTime({
     range: [0, xMax],
-    domain: extent(allData, x)
+    domain: extent(allData, x),
   });
 
   const yScale = scaleLinear({
     range: [yMax, 0],
     domain: [0, Math.max(...allData.map(y))],
-    nice: true
+    nice: true,
   });
 
   const yScaleForCountries = scaleBand({
     domain: series.map((_, i) => i),
-    paddingOuter: 1
+    paddingOuter: 1,
   });
   yScaleForCountries.rangeRound([0, height - 200]);
 
@@ -99,8 +99,8 @@ const Chart = (props) => {
             <Group key={`lines-${i}`} top={margin.top} left={margin.left}>
               <LinePath
                 data={country.data}
-                x={d => xScale(x(d))}
-                y={d => yScale(y(d))}
+                x={(d) => xScale(x(d))}
+                y={(d) => yScale(y(d))}
                 stroke={country.color}
                 strokeWidth={2}
                 curve={curveBasis}
@@ -116,10 +116,10 @@ const Chart = (props) => {
             numTicks={numTicksForHeight(height)}
             label={
               comparedToTotalPopulation
-                ? `${
+                ? `${category === "deaths" ? "Deaths" : "Contaminated"} (total)`
+                : `${
                     category === "deaths" ? "Deaths" : "Contaminated"
-                  } (total)`
-                : `${category === "deaths" ? "Deaths" : "Contaminated"} (per 100,000 inhabitants)`
+                  } (per 100,000 inhabitants)`
             }
           />
           <AxisBottom

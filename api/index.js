@@ -8,7 +8,7 @@ const PATH_TO_COVID_19_DATA =
 
 const PATH_TO_POPULATION_DATA = "../population-data/";
 
-const parseLine = line => {
+const parseLine = (line) => {
   return Object.entries(line)
     .map(([key, value]) => {
       const parsedKey = /(?<month>0?[1-9]|1[012])(?:\/)(?<day>0?[1-9]|[12]\d|3[01])(?:\/)(?<year>\d{2})/.exec(
@@ -16,11 +16,11 @@ const parseLine = line => {
       );
       if (parsedKey) {
         const {
-          groups: { month, day, year }
+          groups: { month, day, year },
         } = parsedKey;
         return {
           date: `20${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`,
-          number: Number(value)
+          number: Number(value),
         };
       }
       return null;
@@ -31,7 +31,7 @@ const addLines = (a, b) => {
   return a.map((entry, i) => {
     return {
       date: entry.date,
-      number: entry.number + b[i].number
+      number: entry.number + b[i].number,
     };
   });
 };
@@ -67,7 +67,7 @@ async function readPopulationData() {
     acc[line["Country Name"]] = {
       countryName: line["Country Name"],
       countryCode: line["Country Code"],
-      population: Number(line["2018"])
+      population: Number(line["2018"]),
     };
     return acc;
   }, {});
@@ -84,7 +84,7 @@ const init = async () => {
   const population = await readPopulationData();
 
   // Start merging data
-  const findPopulation = country => {
+  const findPopulation = (country) => {
     // Convert between the 2 datasets
     switch (country) {
       case "Bahamas":
@@ -151,38 +151,39 @@ const init = async () => {
       return {
         name: countryName,
         population: findPopulation(countryName),
-        data: deathData.map(d => ({
+        data: deathData.map((d) => ({
           date: d.date,
           deaths: d.number,
-          confirmed: confirmed[countryName].find(entry => entry.date === d.date)
-            .number
-        }))
+          confirmed: confirmed[countryName].find(
+            (entry) => entry.date === d.date
+          ).number,
+        })),
       };
     })
-    .filter(data => data.population !== undefined);
+    .filter((data) => data.population !== undefined);
 
   const server = Hapi.server({
     port: 3050,
-    host: "localhost"
+    host: "localhost",
   });
 
   server.route({
     method: "GET",
     path: "/",
-    handler: () => "Hello World!"
+    handler: () => "Hello World!",
   });
 
   server.route({
     method: "GET",
     path: "/data",
-    handler: () => finalData
+    handler: () => finalData,
   });
 
   await server.start();
   console.log("Server running on %s", server.info.uri);
 };
 
-process.on("unhandledRejection", err => {
+process.on("unhandledRejection", (err) => {
   console.log(err);
   process.exit(1);
 });

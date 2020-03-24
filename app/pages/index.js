@@ -2,6 +2,7 @@ import { useState } from "react";
 import fetch from "isomorphic-unfetch";
 import { withTheme } from "emotion-theming";
 import ColorHash from "@hugojosefson/color-hash";
+import Head from "next/head";
 import {
   Box,
   Flex,
@@ -12,7 +13,7 @@ import {
   SimpleGrid,
   Tag,
   TagCloseButton,
-  TagLabel
+  TagLabel,
 } from "@chakra-ui/core";
 
 import Background from "../components/Background";
@@ -24,7 +25,7 @@ import Header from "../components/Header";
 
 const colorHash = new ColorHash();
 
-const Index = props => {
+const Index = (props) => {
   const [yAxis, setYAxis] = useState("population");
   const [category, setCategory] = useState("deaths");
   const [selectedCountries, setSelectedCountries] = useState([
@@ -32,29 +33,33 @@ const Index = props => {
     "France",
     "Italy",
     "Norway",
-    "US"
+    "US",
   ]);
 
   const hiddenCountries = props.countries
-    .filter(c => !selectedCountries.includes(c.name))
-    .map(c => c.name);
-  const selectedCountriesWithColor = selectedCountries.map(country => ({
+    .filter((c) => !selectedCountries.includes(c.name))
+    .map((c) => c.name);
+  const selectedCountriesWithColor = selectedCountries.map((country) => ({
     name: country,
     // TODO: implement error handling
-    color: props.countries.find(c => c.name === country).color
+    color: props.countries.find((c) => c.name === country).color,
   }));
 
   const lastUpdate = props.data[0].data[props.data[0].data.length - 1].date;
 
   return (
     <Background>
-      <Header title="COVID-19 Graph" />
+      <Head>
+        <title>COVID-19 Chart</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      <Header title="COVID-19 Chart" />
       <Container flexGrow="1">
         <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={1}>
           <FormControl mt={4} as="fieldset">
             <FormLabel as="legend">Y axis</FormLabel>
             <RadioGroup
-              onChange={e => setYAxis(e.target.value)}
+              onChange={(e) => setYAxis(e.target.value)}
               value={yAxis}
               isInline
             >
@@ -65,7 +70,7 @@ const Index = props => {
           <FormControl mt={4}>
             <FormLabel as="legend">Category</FormLabel>
             <RadioGroup
-              onChange={e => setCategory(e.target.value)}
+              onChange={(e) => setCategory(e.target.value)}
               value={category}
               isInline
             >
@@ -78,7 +83,7 @@ const Index = props => {
           <FormControl my={4}>
             <FormLabel as="legend">Countries</FormLabel>
             <Flex pr={1} direction="horizontal" wrap="wrap">
-              {selectedCountriesWithColor.map(country => {
+              {selectedCountriesWithColor.map((country) => {
                 return (
                   <Tag key={country.name} mr={1} mb={1}>
                     <Box
@@ -92,8 +97,8 @@ const Index = props => {
                     <TagLabel>{country.name}</TagLabel>
                     <TagCloseButton
                       onClick={() => {
-                        setSelectedCountries(prevState =>
-                          prevState.filter(c => c !== country.name)
+                        setSelectedCountries((prevState) =>
+                          prevState.filter((c) => c !== country.name)
                         );
                       }}
                     />
@@ -102,8 +107,8 @@ const Index = props => {
               })}
               <ComboBox
                 countries={hiddenCountries}
-                onSelect={country => {
-                  setSelectedCountries(prevState => {
+                onSelect={(country) => {
+                  setSelectedCountries((prevState) => {
                     const countries = [...prevState, country];
                     countries.sort();
                     return countries;
@@ -130,9 +135,9 @@ const Index = props => {
 export async function getStaticProps() {
   const res = await fetch("http://localhost:3050/data");
   const data = await res.json();
-  const countries = data.map(country => ({
+  const countries = data.map((country) => ({
     name: country.name,
-    color: colorHash.hex(country.name)
+    color: colorHash.hex(country.name),
   }));
   return { props: { countries, data } };
 }

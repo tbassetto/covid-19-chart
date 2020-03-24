@@ -11,13 +11,13 @@ export default function ComboBox(props) {
     getComboboxProps,
     highlightedIndex,
     getItemProps,
-    reset
+    reset,
   } = useCombobox({
     id: "downshift-combobox",
     items: inputItems,
     onInputValueChange: ({ inputValue }) => {
       setInputItems(
-        props.countries.filter(item =>
+        props.countries.filter((item) =>
           item.toLowerCase().includes(inputValue.toLowerCase())
         )
       );
@@ -27,7 +27,7 @@ export default function ComboBox(props) {
         reset();
         props.onSelect(selectedItem);
       }
-    }
+    },
   });
 
   return (
@@ -37,25 +37,25 @@ export default function ComboBox(props) {
         placeholder="Add Country"
         isFullWidth={false}
         size="sm"
-        onKeyPress={event => {
+        onKeyPress={(event) => {
           if (event.key === "Enter") {
             props.onSelect(event.target.value);
           }
         }}
       />
-      {isOpen &&<List
-        {...getMenuProps()}
-        pos="absolute"
-        left={0}
-        top={8}
-        w={201}
-        bg="#fff"
-        border="1px"
-        borderRadius="sm"
-        borderColor="gray.200"
-      >
-        {
-          inputItems.map((item, index) => (
+      {isOpen && (
+        <List
+          {...getMenuProps()}
+          pos="absolute"
+          left={0}
+          top={8}
+          w={201}
+          bg="#fff"
+          border="1px"
+          borderRadius="sm"
+          borderColor="gray.200"
+        >
+          {inputItems.map((item, index) => (
             <ListItem
               px={3}
               bg={highlightedIndex === index ? "#bde4ff" : ""}
@@ -65,7 +65,8 @@ export default function ComboBox(props) {
               {item}
             </ListItem>
           ))}
-      </List>}
+        </List>
+      )}
     </Box>
   );
 }
