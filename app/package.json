@@ -1,0 +1,43 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Thomas Bassetto <thobasse@cisco.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@chakra-ui/core": "^0.6.1",
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "@hugojosefson/color-hash": "^2.0.3",
+    "@vx/axis": "^0.0.195",
+    "@vx/curve": "^0.0.195",
+    "@vx/gradient": "^0.0.195",
+    "@vx/grid": "^0.0.195",
+    "@vx/group": "^0.0.195",
+    "@vx/mock-data": "^0.0.195",
+    "@vx/responsive": "^0.0.195",
+    "@vx/scale": "^0.0.195",
+    "@vx/shape": "^0.0.195",
+    "@vx/text": "^0.0.195",
+    "@vx/tooltip": "^0.0.195",
+    "d3-array": "^2.4.0",
+    "downshift": "^5.0.5",
+    "emotion-theming": "^10.0.27",
+    "isomorphic-unfetch": "^3.0.0",
+    "next": "^9.3.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-react": "^7.19.0",
+    "prettier": "^2.0.1"
+  }
+}
