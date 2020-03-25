@@ -13,8 +13,8 @@ import {
 import ColorHash from "@hugojosefson/color-hash";
 import { withTheme } from "emotion-theming";
 import fetch from "isomorphic-unfetch";
-import Head from "next/head";
 import { useState } from "react";
+
 import Background from "../components/Background";
 import Chart from "../components/Chart";
 import ComboBox from "../components/ComboBox";
@@ -40,7 +40,6 @@ const Index = (props) => {
     .map((c) => c.name);
   const selectedCountriesWithColor = selectedCountries.map((country) => ({
     name: country,
-    // TODO: implement error handling
     color: props.countries.find((c) => c.name === country).color,
   }));
 
@@ -48,11 +47,7 @@ const Index = (props) => {
 
   return (
     <Background>
-      <Head>
-        <title>COVID-19 Chart</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <Header title="COVID-19 Chart" />
+      <Header />
       <Container flexGrow="1">
         <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={1}>
           <FormControl mt={4} as="fieldset">
