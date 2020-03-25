@@ -3,5 +3,11 @@
   "workspaces": [
     "api",
     "app"
-  ]
+  ],
+  "scripts": {
+    "build": "cd app && yarn build && yarn export",
+    "dev": "cd app && yarn dev",
+    "lint": "yarn workspaces run lint",
+    "prettier": "yarn workspaces run prettier"
+  }
 }

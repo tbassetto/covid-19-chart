@@ -8,7 +8,7 @@
     "build": "concurrently -n \"server,app\" -c \"bgBlue.bold,bgMagenta.bold\" -s \"first\" -k \"yarn server\" \"next build\"",
     "dev": "concurrently -n \"server,app\" -c \"bgBlue.bold,bgMagenta.bold\" -s \"first\" -k \"yarn server:dev\" \"next\"",
     "export": "next export",
-    "lint": "eslint .",
+    "lint": "eslint *.js components pages",
     "prettier": "prettier *.js components pages --write",
     "server": "node ../api/index.js",
     "server:dev": "../api/node_modules/.bin/nodemon ../api/index.js",
