@@ -1,8 +1,3 @@
-import { useState } from "react";
-import fetch from "isomorphic-unfetch";
-import { withTheme } from "emotion-theming";
-import ColorHash from "@hugojosefson/color-hash";
-import Head from "next/head";
 import {
   Box,
   Flex,
@@ -15,7 +10,11 @@ import {
   TagCloseButton,
   TagLabel,
 } from "@chakra-ui/core";
-
+import ColorHash from "@hugojosefson/color-hash";
+import { withTheme } from "emotion-theming";
+import fetch from "isomorphic-unfetch";
+import Head from "next/head";
+import { useState } from "react";
 import Background from "../components/Background";
 import Chart from "../components/Chart";
 import ComboBox from "../components/ComboBox";
