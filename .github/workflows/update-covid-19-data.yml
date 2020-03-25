@@ -1,0 +1,29 @@
+name: Update COVID-19 data 
+
+on:
+  schedule:
+    - cron:  '0 18 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: Update the COVID-19 data
+      run: |
+        git submodule update --init
+        git submodule foreach git pull
+        git commit -am "Update COVID-19 data"
+
+    # TODO: Handle failures?
+    # TODO: run unit/e2e tests?
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    
+    # The Netlify webhook should now trigger and reploy the website
