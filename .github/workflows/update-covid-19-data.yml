@@ -2,7 +2,7 @@ name: Update COVID-19 data
 
 on:
   schedule:
-    - cron: "0/60 * * * *"
+    - cron: "0 20 * * *"
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -a "Update COVID-19 data" -a
+          git commit -am "Update COVID-19 data"
 
       # TODO: run unit/e2e tests?
 
