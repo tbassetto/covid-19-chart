@@ -10,6 +10,7 @@ Just a pet project to try new technologies. Also, I live in a small country with
 ## Testing the app locally
 
 ```bash
+yarn
 cd app
 yarn dev
 ```
@@ -24,6 +25,7 @@ yarn dev
 ## Update ./covid-data-19
 
 ```bash
+git submodule update --init
 git submodule foreach git pull
 ```
 
