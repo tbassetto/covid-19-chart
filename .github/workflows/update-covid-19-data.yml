@@ -17,13 +17,15 @@ jobs:
           git submodule update --init
           git submodule foreach git checkout master
           git submodule foreach git pull
-          git commit -am "Update COVID-19 data"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -a "Update COVID-19 data" -a
 
-      # TODO: Handle failures?
       # TODO: run unit/e2e tests?
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      # The Netlify webhook should now trigger and reploy the website
+
+      # The Netlify webhook should now trigger and redeploy the website
