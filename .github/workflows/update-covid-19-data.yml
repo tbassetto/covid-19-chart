@@ -12,11 +12,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Update the COVID-19 data
+      - name: Download latest COVID-19 data
         run: |
           git submodule update --init
           git submodule foreach git checkout master
           git submodule foreach git pull
+          echo "::set-env name=NEW_DATA::$(git status -s)"
+
+      - name: Commit the new COVID-19 data
+        if: ${{ env.NEW_DATA != '' }}
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -a "Update COVID-19 data" -a
@@ -24,8 +29,7 @@ jobs:
       # TODO: run unit/e2e tests?
 
       - name: Push changes
+        if: ${{ env.NEW_DATA != '' }}
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      # The Netlify webhook should now trigger and redeploy the website
