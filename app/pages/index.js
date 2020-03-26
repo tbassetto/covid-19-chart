@@ -25,6 +25,8 @@ import Header from "../components/Header";
 const colorHash = new ColorHash();
 
 const Index = (props) => {
+  // const [yScale, setYScale] = useState("linear"); | "log"
+  // const [origin, setOrigin] = useState("sameDay"); | "alignOnFirst"
   const [yAxis, setYAxis] = useState("population");
   const [category, setCategory] = useState("deaths");
   const [selectedCountries, setSelectedCountries] = useState([

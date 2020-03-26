@@ -30,7 +30,7 @@ export default {
           />
         </svg>
       ),
-      viewBox: "0 0 671 675"
-    }
-  }
+      viewBox: "0 0 671 675",
+    },
+  },
 };

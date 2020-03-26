@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-const Meta = ({title}) => {
+const Meta = ({ title }) => {
   return (
     <Head>
       <title>{title}</title>
@@ -21,7 +21,10 @@ const Meta = ({title}) => {
       {/* <meta name="twitter:image" content="" /> */}
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
-      <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre:700" rel="stylesheet" />
+      <link
+        href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre:700"
+        rel="stylesheet"
+      />
     </Head>
   );
 };
