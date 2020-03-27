@@ -9,16 +9,18 @@ import { scaleBand, scaleLinear, scaleTime } from "@vx/scale";
 import { Circle, Line, LinePath } from "@vx/shape";
 import { TooltipWithBounds, useTooltip } from "@vx/tooltip";
 import { bisector, extent } from "d3-array";
+import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import { useState } from "react";
 
 const formatTime = timeFormat("%B %d, %Y");
+const formatNumber = format(",");
 
-const Chart = (props) => {
+const Chart = props => {
   const [verticalLine, setVerticalLine] = useState({
     show: false,
     ds: [],
-    circles: [],
+    circles: []
   });
   const {
     tooltipData,
@@ -26,7 +28,7 @@ const Chart = (props) => {
     tooltipTop,
     tooltipOpen,
     showTooltip,
-    hideTooltip,
+    hideTooltip
   } = useTooltip();
   const { data, yAxis, category, countries, parentWidth } = props;
   const width = parentWidth;
@@ -35,14 +37,14 @@ const Chart = (props) => {
     top: 50,
     right: 30,
     bottom: 50,
-    left: 80,
+    left: 80
   };
   const comparedToTotalPopulation = yAxis === "population";
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = event => {
     const coords = localPoint(event.target.ownerSVGElement, event);
     const x0 = xScale.invert(coords.x - margin.left);
-    const anyCountry = data.find((l) => l.name === countries[0].name);
+    const anyCountry = data.find(l => l.name === countries[0].name);
     const index = bisectDate(anyCountry.data, x0, 1);
     const d0 = anyCountry.data[index - 1];
     const d1 = anyCountry.data[index];
@@ -56,12 +58,12 @@ const Chart = (props) => {
       index;
       i = d === d1 ? index : index - 1;
     }
-    const circles = countries.map((country) => {
-      const found = data.find((l) => l.name === country.name);
+    const circles = countries.map(country => {
+      const found = data.find(l => l.name === country.name);
       return {
         name: country.name,
         color: country.color,
-        d: found.data[i],
+        d: found.data[i]
       };
     });
     setVerticalLine({ show: true, d: d, circles: circles });
@@ -70,38 +72,38 @@ const Chart = (props) => {
       tooltipTop: coords.y,
       tooltipData: {
         date: d.date,
-        circles,
-      },
+        circles
+      }
     });
   };
 
-  let series = countries.map((country) => {
-    const found = data.find((l) => l.name === country.name);
+  let series = countries.map(country => {
+    const found = data.find(l => l.name === country.name);
     return {
       name: country.name,
       color: country.color,
       population: found.population,
-      data: found.data,
+      data: found.data
     };
   });
 
   if (!comparedToTotalPopulation) {
-    series = series.map((country) => {
+    series = series.map(country => {
       return {
         ...country,
-        data: country.data.map((data) => ({
+        data: country.data.map(data => ({
           ...data,
           deaths: (data.deaths / country.population) * 100000,
-          confirmed: (data.confirmed / country.population) * 100000,
-        })),
+          confirmed: (data.confirmed / country.population) * 100000
+        }))
       };
     });
   }
   const allData = series.reduce((acc, d) => acc.concat(d.data), []);
 
   // accessors
-  const getX = (d) => new Date(d.date);
-  const getY = (d) => d[category];
+  const getX = d => new Date(d.date);
+  const getY = d => d[category];
 
   const bisectDate = bisector(getX).left;
 
@@ -123,18 +125,18 @@ const Chart = (props) => {
   // scales
   const xScale = scaleTime({
     range: [0, xMax],
-    domain: extent(allData, getX),
+    domain: extent(allData, getX)
   });
 
   const yScale = scaleLinear({
     range: [yMax, 0],
-    domain: [0, Math.max(...allData.map(getY))],
+    domain: [0, Math.max(...allData.map(getY))]
     // nice: true
   });
 
   const yScaleForCountries = scaleBand({
     domain: series.map((_, i) => i),
-    paddingOuter: 1,
+    paddingOuter: 1
   });
   yScaleForCountries.rangeRound([0, height - 200]);
 
@@ -157,8 +159,8 @@ const Chart = (props) => {
             <Group key={`lines-${i}`} top={margin.top} left={margin.left}>
               <LinePath
                 data={country.data}
-                x={(d) => xScale(getX(d))}
-                y={(d) => yScale(getY(d))}
+                x={d => xScale(getX(d))}
+                y={d => yScale(getY(d))}
                 stroke={country.color}
                 strokeWidth={2}
                 curve={curveBasis}
@@ -174,7 +176,7 @@ const Chart = (props) => {
               stroke="#CBD5E0"
               style={{ pointerEvents: "none" }}
             />
-            {verticalLine.circles.map((circle) => {
+            {verticalLine.circles.map(circle => {
               return (
                 <Circle
                   key={circle.name}
@@ -234,7 +236,7 @@ const Chart = (props) => {
           <div>
             <strong>{formatTime(new Date(tooltipData.date))}</strong>
           </div>
-          {tooltipData.circles.map((circle) => (
+          {tooltipData.circles.map(circle => (
             <Flex my={1} align="center" direction="row" key={circle.name}>
               <Box
                 border="1px solid white"
@@ -244,9 +246,14 @@ const Chart = (props) => {
                 w={3}
                 mr={1}
               />
-              <span>
-                {circle.name}: {getY(circle.d)}
-              </span>
+              <Flex align="center" flex={1}>
+                <Box flex={1} mr={3}>
+                  {circle.name}:
+                </Box>
+                <Box flex={1} textAlign="right">
+                  {formatNumber(getY(circle.d))}
+                </Box>
+              </Flex>
             </Flex>
           ))}
         </TooltipWithBounds>
