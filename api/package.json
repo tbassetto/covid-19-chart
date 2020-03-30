@@ -1,27 +1,36 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.ts",
   "author": "Thomas Bassetto <thobasse@cisco.com>",
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon index.js",
-    "lint": "eslint .",
-    "prettier": "prettier . --write",
-    "start": "dev"
+    "build": "tsc",
+    "dev": "nodemon",
+    "lint": "eslint \"src/**/*.ts\"",
+    "prettier": "prettier *.js \"src/**/*.ts\" --write",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@hapi/hapi": "^19.1.1",
     "neat-csv": "^5.2.0"
   },
   "devDependencies": {
+    "@types/hapi": "^18.0.3",
+    "@types/neat-csv": "^4.0.0",
+    "@types/node": "^13.9.5",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
     "nodemon": "^2.0.2",
-    "prettier": "^2.0.1"
+    "prettier": "^2.0.1",
+    "ts-node": "^8.8.1",
+    "typescript": "^3.8.3"
   },
   "engines": {
-    "node": "^12.0.0"
+    "node": "^12.9.0"
   }
 }

@@ -10,8 +10,8 @@
     "export": "next export",
     "lint": "eslint *.js components pages",
     "prettier": "prettier *.js components pages --write",
-    "server": "node ../api/index.js",
-    "server:dev": "../api/node_modules/.bin/nodemon ../api/index.js",
+    "server": "yarn --cwd ../api build && yarn --cwd ../api start",
+    "server:dev": "yarn --cwd ../api dev",
     "start": "next start"
   },
   "dependencies": {

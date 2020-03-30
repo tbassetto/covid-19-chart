@@ -1,33 +1,34 @@
-const Hapi = require("@hapi/hapi");
-const fs = require("fs").promises;
-const path = require("path");
-const neatCsv = require("neat-csv");
+import Hapi from "@hapi/hapi";
+import { promises as fs } from "fs";
+import path from "path";
+import neatCsv from "neat-csv";
+
+import { DayDatum, NumberPerCountry, CountryData } from "./types";
 
 const PATH_TO_COVID_19_DATA =
   "../covid-19-data/csse_covid_19_data/csse_covid_19_time_series/";
 
 const PATH_TO_POPULATION_DATA = "../population-data/";
 
-const parseLine = (line) => {
+const parseRow = (line: neatCsv.Row): DayDatum[] => {
   return Object.entries(line)
     .map(([key, value]) => {
       const parsedKey = /(?<month>0?[1-9]|1[012])(?:\/)(?<day>0?[1-9]|[12]\d|3[01])(?:\/)(?<year>\d{2})/.exec(
         key
       );
-      if (parsedKey) {
-        const {
-          groups: { month, day, year },
-        } = parsedKey;
-        return {
-          date: `20${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`,
-          number: Number(value),
-        };
-      }
-      return null;
+      // Ignore columns that are not dates
+      if (!parsedKey) return null;
+      const {
+        groups: { month, day, year },
+      } = parsedKey;
+      return {
+        date: `20${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`,
+        number: Number(value),
+      };
     })
     .filter(Boolean);
 };
-const addLines = (a, b) => {
+const addLines = (a: DayDatum[], b: DayDatum[]): DayDatum[] => {
   return a.map((entry, i) => {
     return {
       date: entry.date,
@@ -35,24 +36,32 @@ const addLines = (a, b) => {
     };
   });
 };
-async function getGlobalData(filename) {
-  let result = await neatCsv(
+
+async function getGlobalData(filename: string): Promise<NumberPerCountry> {
+  const rows = await neatCsv(
     await fs.readFile(path.join(PATH_TO_COVID_19_DATA, filename))
   );
-  result = result.reduce((acc, line) => {
-    const countryName = line["Country/Region"];
+  const result = rows.reduce((acc, row: neatCsv.Row) => {
+    const countryName = row["Country/Region"];
     if (!acc[countryName]) {
-      acc[countryName] = parseLine(line);
+      acc[countryName] = parseRow(row);
     } else {
-      // console.debug(`${countryName} already found`, line["Province/State"]);
-      acc[countryName] = addLines(acc[countryName], parseLine(line));
+      // console.debug(`${countryName} already found`, row["Province/State"]);
+      acc[countryName] = addLines(acc[countryName], parseRow(row));
     }
     return acc;
-  }, {});
+  }, {} as NumberPerCountry);
   return result;
 }
 
-async function readPopulationData() {
+interface Population {
+  countryName: string;
+  population: number;
+}
+interface PopulationPerCountry {
+  [countryName: string]: Population;
+}
+async function readPopulationData(): Promise<PopulationPerCountry> {
   return (
     await neatCsv(
       await fs.readFile(
@@ -63,32 +72,37 @@ async function readPopulationData() {
       ),
       { skipLines: 4 }
     )
-  ).reduce((acc, line) => {
-    acc[line["Country Name"]] = {
-      countryName: line["Country Name"],
-      countryCode: line["Country Code"],
-      population: Number(line["2018"]),
+  ).reduce((acc, row) => {
+    acc[row["Country Name"]] = {
+      countryName: row["Country Name"],
+      population:
+        row["Country Name"] === "Eritrea"
+          ? Number(row["2011"])
+          : Number(row["2018"]),
     };
     return acc;
-  }, {});
+  }, {} as PopulationPerCountry);
 }
 
-const init = async () => {
+const init = async (): Promise<void> => {
+  // Population data
+  const population = await readPopulationData();
+
   // COVID-19
   const deaths = await getGlobalData("time_series_covid19_deaths_global.csv");
   const confirmed = await getGlobalData(
     "time_series_covid19_confirmed_global.csv"
   );
 
-  // Population data
-  const population = await readPopulationData();
-
   // Start merging data
-  const findPopulation = (country) => {
+  const findPopulation = (country: string): number | undefined => {
     // Convert between the 2 datasets
     switch (country) {
       case "Bahamas":
         country = "Bahamas, The";
+        break;
+      case "Burma":
+        country = "Myanmar";
         break;
       case "Brunei":
         country = "Brunei Darussalam";
@@ -117,6 +131,9 @@ const init = async () => {
       case "Kyrgyzstan":
         country = "Kyrgyz Republic";
         break;
+      case "Laos":
+        country = "Lao PDR";
+        break;
       case "Russia":
         country = "Russian Federation";
         break;
@@ -125,6 +142,9 @@ const init = async () => {
         break;
       case "Saint Vincent and the Grenadines":
         country = "St. Vincent and the Grenadines";
+        break;
+      case "Saint Kitts and Nevis":
+        country = "St. Kitts and Nevis";
         break;
       case "Slovakia":
         country = "Slovak Republic";
@@ -146,7 +166,7 @@ const init = async () => {
     }
     console.warn(`Could not find population data for ${country}`);
   };
-  const finalData = Object.entries(deaths)
+  const finalData: CountryData[] = Object.entries(deaths)
     .map(([countryName, deathData]) => {
       return {
         name: countryName,

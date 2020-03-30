@@ -1,4 +1,5 @@
 node_modules
+api/dist
 api/node_modules
 app/.next
 app/node_modules
