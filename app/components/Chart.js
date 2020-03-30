@@ -14,7 +14,7 @@ import { timeFormat } from "d3-time-format";
 import { useState } from "react";
 
 const formatTime = timeFormat("%B %d, %Y");
-const formatNumber = format(",");
+const formatThousands = format(",");
 
 const Chart = props => {
   const [verticalLine, setVerticalLine] = useState({
@@ -39,7 +39,7 @@ const Chart = props => {
     bottom: 50,
     left: 80
   };
-  const comparedToTotalPopulation = yAxis === "population";
+  const per100000 = yAxis === "per100000";
 
   const handleMouseMove = event => {
     const coords = localPoint(event.target.ownerSVGElement, event);
@@ -87,7 +87,7 @@ const Chart = props => {
     };
   });
 
-  if (!comparedToTotalPopulation) {
+  if (per100000) {
     series = series.map(country => {
       return {
         ...country,
@@ -198,7 +198,7 @@ const Chart = props => {
             scale={yScale}
             numTicks={numTicksForHeight(height)}
             label={
-              comparedToTotalPopulation
+              per100000
                 ? `${category === "deaths" ? "Deaths" : "Contaminated"} (total)`
                 : `${
                     category === "deaths" ? "Deaths" : "Contaminated"
@@ -251,7 +251,7 @@ const Chart = props => {
                   {circle.name}:
                 </Box>
                 <Box flex={1} textAlign="right">
-                  {formatNumber(getY(circle.d))}
+                  {formatThousands(getY(circle.d))}
                 </Box>
               </Flex>
             </Flex>

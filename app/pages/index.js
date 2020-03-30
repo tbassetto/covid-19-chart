@@ -27,13 +27,14 @@ const colorHash = new ColorHash();
 const Index = (props) => {
   // const [yScale, setYScale] = useState("linear"); | "log"
   // const [origin, setOrigin] = useState("sameDay"); | "alignOnFirst"
-  const [yAxis, setYAxis] = useState("population");
+  const [yAxis, setYAxis] = useState("total");
   const [category, setCategory] = useState("deaths");
   const [selectedCountries, setSelectedCountries] = useState([
     "China",
     "France",
+    "Iran",
     "Italy",
-    "Norway",
+    "Spain",
     "US",
   ]);
 
@@ -59,7 +60,7 @@ const Index = (props) => {
               value={yAxis}
               isInline
             >
-              <Radio value="population">Total population</Radio>
+              <Radio value="total">Total</Radio>
               <Radio value="per100000">Per 100,000</Radio>
             </RadioGroup>
           </FormControl>
