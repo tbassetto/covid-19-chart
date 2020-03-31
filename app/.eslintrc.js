@@ -1,4 +1,6 @@
 module.exports = {
+  parser: "@typescript-eslint/parser",
+  plugins: ["@typescript-eslint", "react-hooks"],
   env: {
     browser: true,
     es6: true,
@@ -6,9 +8,13 @@ module.exports = {
   },
   extends: [
     "eslint:recommended",
+    'plugin:@typescript-eslint/eslint-recommended',
+    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "prettier",
-    "prettier/react"
+    'prettier',
+    "prettier/react",
+    "prettier/@typescript-eslint",
+    "plugin:react-hooks/recommended"
   ],
   globals: {
     Atomics: "readonly",
@@ -19,7 +25,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true
     },
-    ecmaVersion: 2018,
+    ecmaVersion: 2020,
     sourceType: "module"
   },
   settings: {
@@ -32,5 +38,6 @@ module.exports = {
     "react/no-unescaped-entities": "off", // not needed with NextJS
     "react/prop-types": "off", // would rather use TypeScript if needed
     "react/react-in-jsx-scope": "off", // not needed with NextJS
+    "@typescript-eslint/explicit-function-return-type": 0
   }
 };

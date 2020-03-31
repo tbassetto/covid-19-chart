@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Box, List, Input, ListItem } from "@chakra-ui/core";
+import { Box, List, Input, ListItem, useTheme } from "@chakra-ui/core";
 import { useCombobox } from "downshift";
 
 export default function ComboBox(props) {
+  const theme = useTheme();
   const [inputItems, setInputItems] = useState(props.countries);
   const {
     isOpen,
@@ -56,11 +57,13 @@ export default function ComboBox(props) {
           borderRadius="sm"
           borderColor="gray.200"
         >
-          {inputItems.length === 0 ? <ListItem px={3}>No results</ListItem> : null}
+          {inputItems.length === 0 ? (
+            <ListItem px={3}>No results</ListItem>
+          ) : null}
           {inputItems.map((item, index) => (
             <ListItem
               px={3}
-              bg={highlightedIndex === index ? "#bde4ff" : ""}
+              bg={highlightedIndex === index ? theme.colors.blue[500] : ""}
               key={`${item}${index}`}
               {...getItemProps({ item, index })}
             >

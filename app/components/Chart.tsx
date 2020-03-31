@@ -13,97 +13,75 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import { useState } from "react";
 
+import { DataWithColor, YAxis, Category } from "../pages";
+import { WithParentSizeProps } from "@vx/responsive/lib/enhancers/withParentSize";
+
 const formatTime = timeFormat("%B %d, %Y");
 const formatThousands = format(",");
 
-const Chart = props => {
-  const [verticalLine, setVerticalLine] = useState({
+interface ChartProps extends WithParentSizeProps {
+  countries: DataWithColor[];
+  yAxis: YAxis;
+  category: Category;
+}
+interface TooltipData {
+  date: string;
+  circles: {
+    name: string;
+    color: string;
+    d: {
+      date: string;
+      deaths: number;
+      confirmed: number;
+    };
+  }[];
+}
+const Chart = (props: ChartProps) => {
+  const initialVerticalLine = {
     show: false,
-    ds: [],
-    circles: []
-  });
+    d: undefined,
+    circles: [],
+  };
+  const [verticalLine, setVerticalLine] = useState(initialVerticalLine);
   const {
     tooltipData,
     tooltipLeft,
     tooltipTop,
     tooltipOpen,
     showTooltip,
-    hideTooltip
-  } = useTooltip();
-  const { data, yAxis, category, countries, parentWidth } = props;
+    hideTooltip,
+  } = useTooltip<TooltipData>();
+  const { yAxis, category, countries } = props;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const parentWidth: number = (props as any).parentWidth; // until vx/responsive is fixed
   const width = parentWidth;
   const height = 600;
   const margin = {
     top: 50,
     right: 30,
     bottom: 50,
-    left: 80
+    left: 80,
   };
   const per100000 = yAxis === "per100000";
 
-  const handleMouseMove = event => {
-    const coords = localPoint(event.target.ownerSVGElement, event);
-    const x0 = xScale.invert(coords.x - margin.left);
-    const anyCountry = data.find(l => l.name === countries[0].name);
-    const index = bisectDate(anyCountry.data, x0, 1);
-    const d0 = anyCountry.data[index - 1];
-    const d1 = anyCountry.data[index];
-    let d = d0;
-    let i = index;
-    if (d0 && d1) {
-      d =
-        x0.valueOf() - getX(d0).valueOf() > getX(d1).valueOf() - x0.valueOf()
-          ? d1
-          : d0;
-      index;
-      i = d === d1 ? index : index - 1;
-    }
-    const circles = countries.map(country => {
-      const found = data.find(l => l.name === country.name);
-      return {
-        name: country.name,
-        color: country.color,
-        d: found.data[i]
-      };
-    });
-    setVerticalLine({ show: true, d: d, circles: circles });
-    showTooltip({
-      tooltipLeft: coords.x,
-      tooltipTop: coords.y,
-      tooltipData: {
-        date: d.date,
-        circles
-      }
-    });
-  };
-
-  let series = countries.map(country => {
-    const found = data.find(l => l.name === country.name);
-    return {
-      name: country.name,
-      color: country.color,
-      population: found.population,
-      data: found.data
-    };
-  });
-
+  let series = countries;
   if (per100000) {
-    series = series.map(country => {
+    series = series.map((country) => {
       return {
         ...country,
-        data: country.data.map(data => ({
+        data: country.data.map((data) => ({
           ...data,
           deaths: (data.deaths / country.population) * 100000,
-          confirmed: (data.confirmed / country.population) * 100000
-        }))
+          confirmed: (data.confirmed / country.population) * 100000,
+        })),
       };
     });
   }
   const allData = series.reduce((acc, d) => acc.concat(d.data), []);
 
   // accessors
-  const getX = d => new Date(d.date);
-  const getY = d => d[category];
+  const getX = (d) => new Date(d.date);
+  const getY = (d) => d[category];
 
   const bisectDate = bisector(getX).left;
 
@@ -125,18 +103,54 @@ const Chart = props => {
   // scales
   const xScale = scaleTime({
     range: [0, xMax],
-    domain: extent(allData, getX)
+    domain: extent(allData, getX),
   });
 
   const yScale = scaleLinear({
     range: [yMax, 0],
-    domain: [0, Math.max(...allData.map(getY))]
+    domain: [0, Math.max(...allData.map(getY))],
     // nice: true
   });
 
+  const handleMouseMove = (event) => {
+    const coords = localPoint(event.target.ownerSVGElement, event);
+    const x0 = xScale.invert(coords.x - margin.left);
+    const anyCountry = countries.find((l) => l.name === countries[0].name);
+    const index = bisectDate(anyCountry.data, x0, 1);
+    const d0 = anyCountry.data[index - 1];
+    const d1 = anyCountry.data[index];
+    let d = d0;
+    let i = index;
+    if (d0 && d1) {
+      d =
+        x0.valueOf() - getX(d0).valueOf() > getX(d1).valueOf() - x0.valueOf()
+          ? d1
+          : d0;
+      index;
+      i = d === d1 ? index : index - 1;
+    }
+    const circles = countries.map((country) => {
+      const found = countries.find((l) => l.name === country.name);
+      return {
+        name: country.name,
+        color: country.color,
+        d: found.data[i],
+      };
+    });
+    setVerticalLine({ show: true, d: d, circles: circles });
+    showTooltip({
+      tooltipLeft: coords.x,
+      tooltipTop: coords.y,
+      tooltipData: {
+        date: d.date,
+        circles,
+      },
+    });
+  };
+
   const yScaleForCountries = scaleBand({
     domain: series.map((_, i) => i),
-    paddingOuter: 1
+    paddingOuter: 1,
   });
   yScaleForCountries.rangeRound([0, height - 200]);
 
@@ -159,8 +173,8 @@ const Chart = props => {
             <Group key={`lines-${i}`} top={margin.top} left={margin.left}>
               <LinePath
                 data={country.data}
-                x={d => xScale(getX(d))}
-                y={d => yScale(getY(d))}
+                x={(d) => xScale(getX(d))}
+                y={(d) => yScale(getY(d))}
                 stroke={country.color}
                 strokeWidth={2}
                 curve={curveBasis}
@@ -176,7 +190,7 @@ const Chart = props => {
               stroke="#CBD5E0"
               style={{ pointerEvents: "none" }}
             />
-            {verticalLine.circles.map(circle => {
+            {verticalLine.circles.map((circle) => {
               return (
                 <Circle
                   key={circle.name}
@@ -220,7 +234,7 @@ const Chart = props => {
             fill="transparent"
             onMouseMove={handleMouseMove}
             onMouseLeave={() => {
-              setVerticalLine({ show: false });
+              setVerticalLine(initialVerticalLine);
               hideTooltip();
             }}
           />
@@ -236,7 +250,7 @@ const Chart = props => {
           <div>
             <strong>{formatTime(new Date(tooltipData.date))}</strong>
           </div>
-          {tooltipData.circles.map(circle => (
+          {tooltipData.circles.map((circle) => (
             <Flex my={1} align="center" direction="row" key={circle.name}>
               <Box
                 border="1px solid white"

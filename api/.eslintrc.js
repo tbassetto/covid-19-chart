@@ -2,7 +2,6 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
   env: {
-    commonjs: true,
     es6: true,
     node: true,
   },
@@ -10,15 +9,16 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "prettier",
     "prettier/@typescript-eslint",
-    "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended",
   ],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",
   },
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2020,
     sourceType: "module",
   },
   rules: {},
