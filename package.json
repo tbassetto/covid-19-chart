@@ -9,5 +9,11 @@
     "dev": "cd app && yarn dev",
     "lint": "yarn workspaces run lint",
     "prettier": "yarn workspaces run prettier"
+  },
+  "license": "MIT",
+  "repository": "github:tbassetto/covid-19-chart",
+  "author": "Thomas Bassetto",
+  "engines": {
+    "yarn": "^1.0.0"
   }
 }
