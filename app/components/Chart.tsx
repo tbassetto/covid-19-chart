@@ -18,6 +18,7 @@ import { WithParentSizeProps } from "@vx/responsive/lib/enhancers/withParentSize
 
 const formatTime = timeFormat("%B %d, %Y");
 const formatThousands = format(",");
+const formatRounded = format(",.2~r");
 
 interface ChartProps extends WithParentSizeProps {
   countries: DataWithColor[];
@@ -109,13 +110,12 @@ const Chart = (props: ChartProps) => {
   const yScale = scaleLinear({
     range: [yMax, 0],
     domain: [0, Math.max(...allData.map(getY))],
-    // nice: true
   });
 
   const handleMouseMove = (event) => {
     const coords = localPoint(event.target.ownerSVGElement, event);
     const x0 = xScale.invert(coords.x - margin.left);
-    const anyCountry = countries.find((l) => l.name === countries[0].name);
+    const anyCountry = series.find((l) => l.name === series[0].name); // series[0]?
     const index = bisectDate(anyCountry.data, x0, 1);
     const d0 = anyCountry.data[index - 1];
     const d1 = anyCountry.data[index];
@@ -129,8 +129,8 @@ const Chart = (props: ChartProps) => {
       index;
       i = d === d1 ? index : index - 1;
     }
-    const circles = countries.map((country) => {
-      const found = countries.find((l) => l.name === country.name);
+    const circles = series.map((country) => {
+      const found = series.find((l) => l.name === country.name);
       return {
         name: country.name,
         color: country.color,
@@ -265,7 +265,9 @@ const Chart = (props: ChartProps) => {
                   {circle.name}:
                 </Box>
                 <Box flex={1} textAlign="right">
-                  {formatThousands(getY(circle.d))}
+                  {per100000
+                    ? formatRounded(getY(circle.d))
+                    : formatThousands(getY(circle.d))}
                 </Box>
               </Flex>
             </Flex>
