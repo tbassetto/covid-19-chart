@@ -213,10 +213,10 @@ const Chart = (props: ChartProps) => {
             numTicks={numTicksForHeight(height)}
             label={
               per100000
-                ? `${category === "deaths" ? "Deaths" : "Contaminated"} (total)`
-                : `${
+                ? `${
                     category === "deaths" ? "Deaths" : "Contaminated"
                   } (per 100,000 inhabitants)`
+                : `${category === "deaths" ? "Deaths" : "Contaminated"} (total)`
             }
           />
           <AxisBottom
