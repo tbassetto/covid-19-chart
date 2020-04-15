@@ -158,6 +158,9 @@ const init = async (): Promise<void> => {
       case "Syria":
         country = "Syrian Arab Republic";
         break;
+      case "Yemen":
+        country = "Yemen, Rep.";
+        break;
       default:
         break;
     }
@@ -182,6 +185,8 @@ const init = async (): Promise<void> => {
     })
     .filter((data) => data.population !== undefined);
 
+  const lastUpdate = finalData[0].data[finalData[0].data.length - 1].date;
+
   const server = Hapi.server({
     port: 3050,
     host: "localhost",
@@ -197,6 +202,12 @@ const init = async (): Promise<void> => {
     method: "GET",
     path: "/data",
     handler: () => finalData,
+  });
+
+  server.route({
+    method: "GET",
+    path: "/lastUpdate",
+    handler: () => ({ date: lastUpdate }),
   });
 
   await server.start();

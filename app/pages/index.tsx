@@ -35,6 +35,7 @@ export type DataWithColor = CountryData & {
 
 interface Props {
   data: DataWithColor[];
+  lastUpdate: string;
 }
 const Index = (props: Props) => {
   // const [yScale, setYScale] = useState("linear"); | "log"
@@ -55,9 +56,6 @@ const Index = (props: Props) => {
   const hiddenCountries = props.data
     .filter((c) => !selectedCountries.includes(c.name))
     .map((c) => c.name);
-
-  // TODO: extract elsewhere to share between ALL pages
-  const lastUpdate = props.data[0].data[props.data[0].data.length - 1].date;
 
   return (
     <Background>
@@ -134,19 +132,22 @@ const Index = (props: Props) => {
           />
         </Box>
       </Container>
-      <Footer lastUpdate={lastUpdate} />
+      <Footer lastUpdate={props.lastUpdate} />
     </Background>
   );
 };
 
 export const getStaticProps: GetStaticProps = async () => {
+  const { date: lastUpdate } = await (
+    await fetch("http://localhost:3050/lastUpdate")
+  ).json();
   const res = await fetch("http://localhost:3050/data");
   const json: CountryData[] = await res.json();
   const data = json.map((country) => ({
     ...country,
     color: colorHash.hex(country.name),
   }));
-  return { props: { data } };
+  return { props: { data, lastUpdate } };
 };
 
 export default withTheme(Index);
