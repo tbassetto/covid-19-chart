@@ -17,7 +17,7 @@ yarn dev
 ## TODO
 
 - [ ] Add option to change the x axis (start date mostly)
-- [ ] Add option to change the scale (liner/log)
+- [ ] Add option to change the scale (linear/log)
 - [ ] Add animations to the chart during transitions
 
 ## Update ./covid-data-19
