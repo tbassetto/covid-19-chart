@@ -7,7 +7,7 @@ import { Group } from "@vx/group";
 import { withParentSize } from "@vx/responsive";
 import { scaleBand, scaleLinear, scaleTime } from "@vx/scale";
 import { Circle, Line, LinePath } from "@vx/shape";
-import { TooltipWithBounds, useTooltip } from "@vx/tooltip";
+import { Tooltip, useTooltip } from "@vx/tooltip";
 import { bisector, extent } from "d3-array";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
@@ -241,11 +241,12 @@ const Chart = (props: ChartProps) => {
         </Group>
       </svg>
       {tooltipOpen && (
-        <TooltipWithBounds
+        <Tooltip
           // set this to random so it correctly updates with parent bounds
           key={Math.random()}
           top={tooltipTop}
           left={tooltipLeft}
+          unstyled={false}
         >
           <div>
             <strong>{formatTime(new Date(tooltipData.date))}</strong>
@@ -272,7 +273,7 @@ const Chart = (props: ChartProps) => {
               </Flex>
             </Flex>
           ))}
-        </TooltipWithBounds>
+        </Tooltip>
       )}
     </div>
   );
