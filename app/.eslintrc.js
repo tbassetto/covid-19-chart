@@ -1,6 +1,6 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint", "react-hooks"],
+  plugins: ["@typescript-eslint", "react-hooks", "react"],
   env: {
     browser: true,
     es6: true,
@@ -8,7 +8,6 @@ module.exports = {
   },
   extends: [
     "eslint:recommended",
-    'plugin:@typescript-eslint/eslint-recommended',
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     'prettier',
@@ -33,11 +32,11 @@ module.exports = {
       version: "detect"
     }
   },
-  plugins: ["react"],
   rules: {
     "react/no-unescaped-entities": "off", // not needed with NextJS
     "react/prop-types": "off", // would rather use TypeScript if needed
     "react/react-in-jsx-scope": "off", // not needed with NextJS
-    "@typescript-eslint/explicit-function-return-type": 0
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0 // TO FIX LATER
   }
 };

@@ -19,9 +19,9 @@
   "devDependencies": {
     "@types/hapi": "^18.0.3",
     "@types/neat-csv": "^4.0.0",
-    "@types/node": "^13.9.5",
-    "@typescript-eslint/eslint-plugin": "v2.31.0",
-    "@typescript-eslint/parser": "v2.31.0",
+    "@types/node": "^12.9.0",
+    "@typescript-eslint/eslint-plugin": "v3.6.0",
+    "@typescript-eslint/parser": "v3.6.0",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
