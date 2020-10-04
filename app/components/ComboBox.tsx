@@ -44,34 +44,33 @@ export default function ComboBox(props) {
           }
         }}
       />
-      {isOpen && (
-        <List
-          {...getMenuProps()}
-          zIndex={10}
-          pos="absolute"
-          left={0}
-          top={8}
-          w={200}
-          bg="#fff"
-          border="1px"
-          borderRadius="sm"
-          borderColor="gray.200"
-        >
-          {inputItems.length === 0 ? (
-            <ListItem px={3}>No results</ListItem>
-          ) : null}
-          {inputItems.map((item, index) => (
-            <ListItem
-              px={3}
-              bg={highlightedIndex === index ? theme.colors.blue[500] : ""}
-              key={`${item}${index}`}
-              {...getItemProps({ item, index })}
-            >
-              {item}
-            </ListItem>
-          ))}
-        </List>
-      )}
+      <List
+        {...getMenuProps()}
+        zIndex={10}
+        display={isOpen ? "block" : "none"}
+        pos="absolute"
+        left={0}
+        top={8}
+        w={200}
+        bg="#fff"
+        border="1px"
+        borderRadius="sm"
+        borderColor="gray.200"
+      >
+        {inputItems.length === 0 ? (
+          <ListItem px={3}>No results</ListItem>
+        ) : null}
+        {inputItems.map((item, index) => (
+          <ListItem
+            px={3}
+            bg={highlightedIndex === index ? theme.colors.blue[500] : ""}
+            key={`${item}${index}`}
+            {...getItemProps({ item, index })}
+          >
+            {item}
+          </ListItem>
+        ))}
+      </List>
     </Box>
   );
 }
